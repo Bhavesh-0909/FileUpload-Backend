@@ -13,14 +13,13 @@ const fileUploaderOnCloudinary = async(file, folder)=>{
         quality:90,
         resource_type: "auto"
     }
-    console.log(options)
     return await cloudinary.uploader.upload(file.tempFilePath, options);
 }
 
 exports.localUpload = async(req, res)=>{
     try {
         const file = req.files.file;
-        console.log(file)
+        
         let path = __dirname + "/files/" + `${file.name}`;
 
         file.mv(path);
@@ -43,10 +42,9 @@ exports.fileUploader = async(req, res)=>{
         const {name, email} = req.body;
 
         const file = req.files.file;
-        console.log(file)
 
         const filetype = file.name.split('.')[1].toLowerCase();
-        console.log(filetype)
+    
         if(!SupportFileType(filetype)){
             return res.status(400).json({
                 message:"file type not supported"
@@ -54,7 +52,7 @@ exports.fileUploader = async(req, res)=>{
         }
 
         const response = await fileUploaderOnCloudinary(file, "file");
-        console.log(response)
+        
         const dbEntry = await File.create({
             name, email, imageUrl:response.secure_url
         })
